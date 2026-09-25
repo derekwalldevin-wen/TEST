@@ -1,4 +1,4 @@
-export const STATE_VERSION = 1;
+export const STATE_VERSION = 2;
 export const START_CASH = 1500;
 export const MAX_ROUNDS = 60;
 export const JAIL_POSITION = 10;
@@ -64,10 +64,22 @@ export const BOARD = [
 export const TILES_BY_ID = new Map(BOARD.map((tile) => [tile.id, tile]));
 
 export const PLAYER_DEFS = [
-  { id: 0, name: '嘟嘟', character: 'panda', color: '#d9b35c', accent: '#c44f3d', ai: false, title: '熊猫掌柜' },
-  { id: 1, name: '唐糖', character: 'tang', color: '#4b9b83', accent: '#e1a43a', ai: true, title: '花朝执事' },
-  { id: 2, name: '三太子', character: 'youth', color: '#b83f46', accent: '#dc7a42', ai: true, title: '游侠少主' },
-  { id: 3, name: '德小文', character: 'explorer', color: '#477ba8', accent: '#e2b64f', ai: true, title: '远行探险家' }
+  {
+    id: 0, name: '嘟嘟', character: 'panda', color: '#d9b35c', accent: '#c44f3d', title: '熊猫掌柜',
+    skill: { id: 'prosperous-panda', name: '招财熊猫', tag: '省租', maxUses: 3, description: '每局 3 次，支付租金时减免 20%。' }
+  },
+  {
+    id: 1, name: '唐糖', character: 'tang', color: '#4b9b83', accent: '#e1a43a', title: '花朝执事',
+    skill: { id: 'flower-blessing', name: '花朝祝福', tag: '分红', maxUses: 0, description: '每完成 3 回合，获得 100 文并抽一张机缘卡。' }
+  },
+  {
+    id: 2, name: '三太子', character: 'youth', color: '#b83f46', accent: '#dc7a42', title: '游侠少主',
+    skill: { id: 'wanderer-step', name: '游侠行动', tag: '重骰', maxUses: 2, description: '每局 2 次，掷骰后可重掷一枚骰子。' }
+  },
+  {
+    id: 3, name: '德小文', character: 'explorer', color: '#477ba8', accent: '#e2b64f', title: '远行探险家',
+    skill: { id: 'travel-compass', name: '远行罗盘', tag: '建设', maxUses: 5, description: '每完成一圈，自动为一处已集齐同组的地产免费升级。' }
+  }
 ];
 
 export const CHEST_CARDS = [
@@ -102,27 +114,34 @@ const addLog = (state, text, tone = 'normal') => {
   state.logs = state.logs.slice(0, 80);
 };
 
-export function createInitialState(seed = Date.now()) {
+export function createInitialState(seed = Date.now(), humanId = 0) {
+  const selectedId = PLAYER_DEFS.some((def) => def.id === Number(humanId)) ? Number(humanId) : 0;
   return {
     version: STATE_VERSION,
     seed,
+    humanPlayerId: selectedId,
     round: 1,
-    currentPlayer: 0,
+    currentPlayer: selectedId,
     phase: 'awaiting-roll',
     winner: null,
     pending: null,
     lastRoll: null,
     players: PLAYER_DEFS.map((def, index) => ({
       ...def,
+      ai: def.id !== selectedId,
       cash: START_CASH,
       position: 0,
       owned: [],
       buildings: {},
       jailTurns: 0,
       lastDoubles: 0,
+      turnsPlayed: 0,
+      lapsCompleted: 0,
+      skillUses: 0,
+      skillPulseTurn: -1,
       inJail: false,
       bankrupt: false,
-      autopilot: def.ai,
+      autopilot: def.id !== selectedId,
       avatarOffset: index * 0.38
     })),
     tiles: Object.fromEntries(BOARD.map((tile) => [tile.id, { owner: null, buildings: 0, mortgaged: false }])),
@@ -140,6 +159,36 @@ function seededRandom(seed) {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+function skillUpgradeTarget(state, playerId) {
+  return playerId == null ? null : state.players[playerId].owned
+    .map((tileId) => ({ tileId, tile: TILES_BY_ID.get(tileId), level: state.tiles[tileId].buildings }))
+    .filter(({ tile, level }) => tile?.kind === 'property' && level < 3 && !state.tiles[tile.id].mortgaged && groupMonopoly(state, playerId, tile.group))
+    .sort((a, b) => b.tile.price - a.tile.price || a.level - b.level)[0]?.tileId || null;
+}
+
+function triggerPassiveSkill(state, player, events) {
+  if (player.skill?.id !== 'flower-blessing' || player.turnsPlayed <= 0 || player.turnsPlayed % 3 !== 0 || player.skillPulseTurn === player.turnsPlayed) return;
+  const card = CHANCE_CARDS[state.cardIndex.chance % CHANCE_CARDS.length];
+  state.cardIndex.chance += 1;
+  const amount = 100 + card.amount;
+  player.cash += amount;
+  player.skillPulseTurn = player.turnsPlayed;
+  events.push(event('skill-blessing', { playerId: player.id, amount, card: { ...card } }));
+  addLog(state, `${player.name} 触发「花朝祝福」：获得${amount}文，并抽到「${card.title}」。`, 'good');
+}
+
+function triggerCompassSkill(state, player, events) {
+  if (player.skill?.id !== 'travel-compass' || player.skillUses >= player.skill.maxUses) return false;
+  const tileId = skillUpgradeTarget(state, player.id);
+  if (!tileId) return false;
+  const tile = TILES_BY_ID.get(tileId);
+  state.tiles[tileId].buildings += 1;
+  player.skillUses += 1;
+  events.push(event('skill-build', { playerId: player.id, tileId, level: state.tiles[tileId].buildings, free: true }));
+  addLog(state, `${player.name} 的「远行罗盘」为${tile.name}免费升级至 ${state.tiles[tileId].buildings} 级。`, 'good');
+  return true;
 }
 
 export function calculatePropertyRent(state, tileId) {
@@ -237,6 +286,14 @@ function finishRoll(state, player, events) {
       if (tile.kind === 'road') rent = calculateRoadRent(state, tile.id);
       if (tile.kind === 'utility') rent = calculateUtilityRent(state, tile.id, diceTotal);
       if (rent > 0) {
+        let discount = 0;
+        if (player.skill?.id === 'prosperous-panda' && player.skillUses < player.skill.maxUses) {
+          discount = Math.floor(rent * 0.2);
+          player.skillUses += 1;
+          events.push(event('skill-rent-discount', { playerId: player.id, amount: discount, remaining: player.skill.maxUses - player.skillUses }));
+          addLog(state, `${player.name} 触发「招财熊猫」，减免${discount}文租金。`, 'good');
+        }
+        rent -= discount;
         transferCash(state, player.id, owner.id, rent, `${tile.name}租金`, events);
         addLog(state, `${player.name} 向${owner.name}支付${rent}文${tile.name}租金。`, 'warning');
       }
@@ -283,6 +340,8 @@ export function roll(state, { dice = null, forcedTotal = null, rng = seededRando
   if (player.inJail && player.jailTurns < 3) {
     return { ok: false, reason: `还需在巡安府停留 ${3 - player.jailTurns} 回合` };
   }
+  const events = [];
+  triggerPassiveSkill(state, player, events);
   const rolledDice = dice || [randomDie(rng), randomDie(rng)];
   if (forcedTotal != null) {
     const first = forcedTotal <= 7 ? 1 : 6;
@@ -302,11 +361,13 @@ export function roll(state, { dice = null, forcedTotal = null, rng = seededRando
   player.position = (oldPosition + total) % BOARD.length;
   state.lastRoll = { dice: [...rolledDice], total, playerId: player.id, doubles };
   state.phase = 'resolving';
-  const events = [event('roll', { playerId: player.id, dice: [...rolledDice], total, doubles }), event('move', { playerId: player.id, from: oldPosition, to: player.position })];
+  events.push(event('roll', { playerId: player.id, dice: [...rolledDice], total, doubles }), event('move', { playerId: player.id, from: oldPosition, to: player.position }));
   if (goSalary) {
     const salary = tileAt(state, 0).salary;
     player.cash += salary;
-    events.push(event('salary', { playerId: player.id, amount: salary }));
+    player.lapsCompleted += 1;
+    events.push(event('salary', { playerId: player.id, amount: salary, lap: player.lapsCompleted }));
+    triggerCompassSkill(state, player, events);
   }
   if (player.lastDoubles >= 3 && !player.inJail) {
     player.position = JAIL_POSITION;
@@ -317,6 +378,11 @@ export function roll(state, { dice = null, forcedTotal = null, rng = seededRando
     addLog(state, `${player.name} 连续三次掷出相同点数，被请进巡安府。`, 'danger');
   } else {
     finishRoll(state, player, events);
+  }
+  if (!state.pending && !player.bankrupt && player.skill?.id === 'wanderer-step' && player.skillUses < player.skill.maxUses) {
+    state.pending = { kind: 'skill-reroll', dieIndex: null };
+    state.phase = 'awaiting-action';
+    addLog(state, `${player.name} 的「游侠行动」可以重掷一枚骰子。`, 'good');
   }
   state.phase = state.pending ? 'awaiting-action' : (player.bankrupt ? 'game-over' : 'awaiting-roll');
   const winner = computeWinner(state);
@@ -438,6 +504,30 @@ export function useJailCard(state) {
   return { ok: true, events: [event('jail-card', { playerId: player.id })] };
 }
 
+export function useSkillReroll(state, dieIndex = 0) {
+  const player = current(state);
+  if (!player || state.pending?.kind !== 'skill-reroll') return { ok: false, reason: '当前没有可重掷的骰子' };
+  if (![0, 1].includes(Number(dieIndex))) return { ok: false, reason: '请选择要重掷的骰子' };
+  const dice = [...state.lastRoll.dice];
+  const oldValue = dice[Number(dieIndex)];
+  dice[Number(dieIndex)] = Math.floor(Math.random() * 6) + 1;
+  state.lastRoll = { ...state.lastRoll, dice, total: dice[0] + dice[1], doubles: dice[0] === dice[1], rerolled: true };
+  player.skillUses += 1;
+  state.pending = null;
+  state.phase = 'awaiting-roll';
+  addLog(state, `${player.name} 使用「游侠行动」重掷一枚骰子：${oldValue} → ${dice[Number(dieIndex)]}。`, 'good');
+  return { ok: true, events: [event('skill-reroll', { playerId: player.id, dieIndex: Number(dieIndex), oldValue, value: dice[Number(dieIndex)], remaining: player.skill.maxUses - player.skillUses })] };
+}
+
+export function keepSkillReroll(state) {
+  if (state.pending?.kind !== 'skill-reroll') return { ok: false, reason: '当前没有待处理的重骰行动' };
+  const player = current(state);
+  state.pending = null;
+  state.phase = 'awaiting-roll';
+  addLog(state, `${player.name} 收起了「游侠行动」，保留本次骰点。`);
+  return { ok: true, events: [event('skill-reroll-keep', { playerId: player.id })] };
+}
+
 export function dismissPending(state) {
   if (!state.pending || state.pending.kind !== 'card') return { ok: false, reason: '当前没有可收起的机缘牌' };
   state.pending = null;
@@ -458,6 +548,7 @@ export function endTurn(state) {
     }
   }
   const alive = activePlayers(state);
+  player.turnsPlayed += 1;
   let nextIndex = (state.currentPlayer + 1) % state.players.length;
   let guard = 0;
   while (state.players[nextIndex].bankrupt && guard++ < state.players.length) nextIndex = (nextIndex + 1) % state.players.length;

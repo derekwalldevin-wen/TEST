@@ -12,7 +12,8 @@ import {
   groupMonopoly,
   liquidateAndBankrupt,
   roll,
-  runSealedAuction
+  runSealedAuction,
+  useSkillReroll
 } from '../src/game/engine.js';
 
 function landPlayerOn(state, playerId, tileId) {
@@ -90,6 +91,54 @@ test('asset value stays finite for transport and utility properties', () => {
   const value = assetValue(state, state.players[0]);
   assert.equal(Number.isFinite(value), true);
   assert.equal(value, 1850);
+});
+
+test('character selection changes the human player and AI roster', () => {
+  const state = createInitialState(9, 3);
+  assert.equal(state.humanPlayerId, 3);
+  assert.equal(state.currentPlayer, 3);
+  assert.equal(state.players.filter((player) => !player.ai).length, 1);
+  assert.equal(state.players[3].autopilot, false);
+});
+
+test('Dudu skill discounts the first rent payment', () => {
+  const state = createInitialState(10, 0);
+  state.players[0].position = 2;
+  state.tiles.p06.owner = 1;
+  roll(state, { dice: [1, 3] });
+  assert.equal(state.players[0].skillUses, 1);
+  assert.equal(state.players[0].cash, 1495);
+});
+
+test('San zi skill offers a one-die reroll after movement', () => {
+  const state = createInitialState(11, 2);
+  state.players[2].position = 1;
+  roll(state, { dice: [1, 2] });
+  assert.equal(state.pending.kind, 'skill-reroll');
+  const result = useSkillReroll(state, 0);
+  assert.equal(result.ok, true);
+  assert.equal(state.players[2].skillUses, 1);
+  assert.equal(state.pending, null);
+});
+
+test('Tang skill pays a blessing every third completed turn', () => {
+  const state = createInitialState(12, 1);
+  state.players[1].turnsPlayed = 3;
+  state.players[1].skillPulseTurn = -1;
+  roll(state, { dice: [1, 1] });
+  assert.equal(state.players[1].skillPulseTurn, 3);
+  assert.equal(state.players[1].cash > 1500, true);
+});
+
+test('De Wen skill freely upgrades one owned monopoly building per lap', () => {
+  const state = createInitialState(13, 3);
+  state.players[3].owned = ['p01', 'p03'];
+  state.tiles.p01.owner = 3;
+  state.tiles.p03.owner = 3;
+  state.players[3].position = 39;
+  roll(state, { dice: [1, 3] });
+  assert.equal(state.players[3].skillUses, 1);
+  assert.equal(state.tiles.p01.buildings + state.tiles.p03.buildings, 1);
 });
 
 test('last solvent player wins after bankruptcy', () => {

@@ -1,4 +1,5 @@
-import { BOARD, GROUPS, TILES_BY_ID, assetValue, calculatePropertyRent, calculateRoadRent } from '../game/engine.js';
+import { BOARD, GROUPS, PLAYER_DEFS, TILES_BY_ID, assetValue, calculatePropertyRent, calculateRoadRent } from '../game/engine.js';
+import { avatarSvg } from './avatar-art.js';
 
 const money = (value) => `${Math.max(0, Math.round(value)).toLocaleString('zh-CN')} 文`;
 const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
@@ -96,8 +97,12 @@ export class GameUI {
       if (action === 'inspect') this.openTileInspector(button.dataset.tileId);
       if (action === 'close-modal') this.closeModal();
       if (action === 'rules') this.openRules();
-      if (action === 'new-game') this.openNewGame();
+      if (action === 'new-game') this.openCharacterSelect(this.state?.humanPlayerId ?? 0);
       if (action === 'confirm-new-game') { this.closeModal(); this.callbacks.onNewGame?.(); }
+      if (action === 'select-character') this.openCharacterSelect(Number(button.dataset.playerId));
+      if (action === 'confirm-character') this.callbacks.onCharacterConfirm?.(Number(this.selectedCharacterId));
+      if (action === 'skill-reroll') this.callbacks.onSkillReroll?.(Number(button.dataset.dieIndex));
+      if (action === 'keep-reroll') this.callbacks.onKeepReroll?.();
       if (action === 'camera-reset') this.callbacks.onCameraReset?.();
       if (action === 'sound') this.toggleAudio();
     });
@@ -107,7 +112,8 @@ export class GameUI {
     this.state = state;
     if (!this.shellReady) return;
     const current = state.players[state.currentPlayer];
-    const currentHuman = current && !current.ai && !current.autopilot;
+    const humanId = state.humanPlayerId ?? 0;
+    const currentHuman = current && current.id === humanId && !current.autopilot;
     const round = document.querySelector('#round-value');
     if (round) round.textContent = state.round;
     const title = document.querySelector('#turn-title');
@@ -118,7 +124,7 @@ export class GameUI {
     if (title) title.textContent = current ? `${current.name}掌柜的回合` : '本局已结束';
     if (subtitle) subtitle.textContent = this.getTurnSubtitle(state, current, currentHuman);
     if (dice) dice.textContent = state.lastRoll ? `${state.lastRoll.dice[0]} + ${state.lastRoll.dice[1]} = ${state.lastRoll.total}` : '—';
-    const human = state.players.find((player) => !player.ai) || state.players[0];
+    const human = state.players.find((player) => player.id === (state.humanPlayerId ?? 0)) || state.players[0];
     if (worth) worth.textContent = money(assetValue(state, human));
     if (count) count.textContent = `${human.owned.length} / 22`;
     this.renderPlayers(state);
@@ -144,10 +150,14 @@ export class GameUI {
     const list = document.querySelector('#players-list');
     if (!list) return;
     list.innerHTML = state.players.map((player) => {
-      const status = player.bankrupt ? '出局' : player.inJail ? '巡安府' : player.autopilot ? '托管中' : player.id === state.currentPlayer ? '当前' : '候场';
+      const isYou = player.id === (state.humanPlayerId ?? 0);
+      const status = player.bankrupt ? '出局' : player.inJail ? '巡安府' : player.autopilot ? '托管中' : player.id === state.currentPlayer ? '当前' : isYou ? '你' : '候场';
+      const skillText = player.skill ? `${player.skill.name} · ${player.skill.tag}` : '无技能';
+      const skillUses = player.skill?.maxUses ? `剩余 ${Math.max(0, player.skill.maxUses - player.skillUses)}` : '被动';
       return `<div class="player-card ${player.id === state.currentPlayer ? 'is-current' : ''} ${player.bankrupt ? 'is-bankrupt' : ''}" style="--player-color:${player.color}" data-player-id="${player.id}">
-        <div class="player-card-top"><div class="avatar-dot" style="--avatar:${player.color}">${player.name.slice(0, 1)}</div><div class="player-name"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.title)}</small></div><span class="player-status ${status === '当前' ? 'status-now' : ''}">${status}</span></div>
+        <div class="player-card-top"><div class="avatar-dot" style="--avatar:${player.color}">${player.name.slice(0, 1)}</div><div class="player-name"><strong>${escapeHtml(player.name)}</strong><small>${escapeHtml(player.title)}</small></div><span class="player-status ${status === '当前' || status === '你' ? 'status-now' : ''}">${status}</span></div>
         <div class="player-money"><span>现金</span><strong>${money(player.cash)}</strong><span class="player-owned">${player.owned.length} 处产业</span></div>
+        <div class="player-skill"><span>✦ ${escapeHtml(skillText)}</span><small>${escapeHtml(skillUses)}</small></div>
         <div class="player-progress"><i style="width:${Math.min(100, (player.cash / 5000) * 100)}%;background:${player.color}"></i></div>
         ${player.id === state.currentPlayer ? `<button class="autopilot-mini" data-action="autopilot" data-player-id="${player.id}">${player.autopilot ? '取消托管' : '交给 AI'}</button>` : ''}
       </div>`;
@@ -186,6 +196,12 @@ export class GameUI {
     }
     if (!human) {
       strip.innerHTML = `<div class="ai-thinking"><span class="ai-pulse"></span>${escapeHtml(player.name)}正在思考……<small>AI 会比较现金、垄断与租金</small></div>`;
+      if (rollButton) rollButton.disabled = true;
+      if (endButton) endButton.disabled = true;
+      return;
+    }
+    if (state.pending?.kind === 'skill-reroll') {
+      strip.innerHTML = `<div class="action-card skill-action"><div><span class="action-overline">游侠行动 · 特殊技能</span><strong>选择一枚骰子重掷</strong><small>本次点数：${state.lastRoll.dice[0]} + ${state.lastRoll.dice[1]}，技能剩余 ${Math.max(0, player.skill.maxUses - player.skillUses)} 次</small></div><div class="action-buttons">${actionButton('skill-reroll', '重掷第一枚', 'primary', false, 'data-die-index="0"')}${actionButton('skill-reroll', '重掷第二枚', 'ghost', false, 'data-die-index="1"')}${actionButton('keep-reroll', '保留', 'ghost')}</div></div>`;
       if (rollButton) rollButton.disabled = true;
       if (endButton) endButton.disabled = true;
       return;
@@ -244,8 +260,21 @@ export class GameUI {
     this.modalOpen = false;
   }
 
+  openCharacterSelect(selectedId = this.state?.humanPlayerId ?? 0) {
+    this.selectedCharacterId = Number(selectedId) || 0;
+    const cards = PLAYER_DEFS.map((def) => {
+      const selected = def.id === this.selectedCharacterId;
+      const uses = def.skill.maxUses ? `技能次数 ${def.skill.maxUses}` : '被动技能';
+      return `<button class="character-select-card ${selected ? 'is-selected' : ''}" data-action="select-character" data-player-id="${def.id}" style="--card-color:${def.color};--card-accent:${def.accent}">
+        <div class="character-card-art">${avatarSvg(def)}<span class="card-selected-mark">${selected ? '已选' : '选择'}</span></div>
+        <div class="character-card-copy"><div class="character-card-title"><strong>${escapeHtml(def.name)}</strong><span>${escapeHtml(def.title)}</span></div><p>${escapeHtml(def.skill.description)}</p><div class="character-card-meta"><span>✦ ${escapeHtml(def.skill.name)}</span><small>${uses}</small></div></div>
+      </button>`;
+    }).join('');
+    this.openModal(`<div class="selection-ornament">选</div><div class="modal-kicker">山海百业城 · 开局请柬</div><h2>先选一位掌柜，<em>再走这条路。</em></h2><p class="modal-lead">四位角色都拥有不可替代的经营天赋。选中的角色由你操控，其余三位会作为 AI 掌柜入席。</p><div class="character-select-grid">${cards}</div><div class="selection-footer"><span class="selection-hint">卡面为参考角色特征绘制的原创二维头像</span>${actionButton('confirm-character', '确认入席', 'primary')}</div>`, 'character-select-modal');
+  }
+
   openIntro() {
-    this.openModal(`<div class="modal-ornament">✦</div><div class="modal-kicker">山海百业城 · 开局请柬</div><h2>让每一枚铜钱，<em>走成一条路。</em></h2><p class="modal-lead">你将和嘟嘟、唐糖、三太子一起掷骰、买地、经营与逐鹿百业。原创 3D 微缩城，40 格棋盘，一局大约 20—40 分钟。</p><div class="intro-roles">${['嘟嘟|熊猫掌柜', '唐糖|花朝执事', '三太子|游侠少主', '德小文|远行探险家'].map((item) => { const [name, title] = item.split('|'); return `<div><span>${name.slice(0, 1)}</span><strong>${name}</strong><small>${title}</small></div>`; }).join('')}</div><div class="modal-actions">${actionButton('close-modal', '入席开局', 'primary')}</div>`, 'intro-modal');
+    this.openCharacterSelect(this.state?.humanPlayerId ?? 0);
   }
 
   openRules() {

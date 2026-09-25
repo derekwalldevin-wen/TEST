@@ -8,6 +8,8 @@ import {
   aiShouldBuy,
   buildProperty,
   buyProperty,
+  keepSkillReroll,
+  useSkillReroll,
   calculatePropertyRent,
   createInitialState,
   declineProperty,
@@ -34,7 +36,8 @@ const sceneRoot = document.querySelector('#scene-root');
 const uiRoot = document.querySelector('#ui-root');
 const bootScreen = document.querySelector('#boot-screen');
 
-let state = loadState();
+let state;
+let loadedFromSave = false;
 let world;
 let ui;
 let audio;
@@ -47,12 +50,18 @@ let lastCharacterTime = performance.now();
 function loadState() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    if (raw) return restoreState(raw);
+    if (raw) {
+      const restored = restoreState(raw);
+      loadedFromSave = true;
+      return restored;
+    }
   } catch (error) {
     console.warn('存档读取失败，使用新局。', error);
   }
   return createInitialState();
 }
+
+state = loadState();
 
 function saveState() {
   try {
@@ -76,7 +85,7 @@ function currentPlayer() {
 
 function isHumanTurn() {
   const player = currentPlayer();
-  return Boolean(player && !player.ai && !player.autopilot && !player.bankrupt);
+  return Boolean(player && player.id === state.humanPlayerId && !player.autopilot && !player.bankrupt);
 }
 
 function playerPosition(playerId = state.currentPlayer) {
@@ -130,6 +139,25 @@ function applyEventVisuals(events) {
       world.floatText(`${sign}${item.amount} ${item.reason || '现金流'}`, position, item.amount >= 0 ? '#f4cf78' : '#e68a70');
     }
     if (item.type === 'salary') world.burst(position, '#eac56f', 14);
+    if (item.type === 'skill-rent-discount') {
+      world.floatText(`招财熊猫 -${item.amount} 文`, position, '#f4cf78');
+      ui.showToast(`招财熊猫减免了 ${item.amount} 文租金`, 'normal');
+    }
+    if (item.type === 'skill-blessing') {
+      world.burst(position, '#d9b65a', 24);
+      world.floatText(`花朝祝福 +${item.amount} 文`, position, '#f2d37c');
+      ui.showToast(`花朝祝福：+${item.amount} 文 · ${item.card.title}`, 'normal');
+    }
+    if (item.type === 'skill-build') {
+      audio.coin();
+      world.burst(tilePosition(item.tileId, .7), player?.color || '#77b6c7', 24);
+      ui.showToast(`远行罗盘：${TILES_BY_ID.get(item.tileId)?.name || '地产'}免费升级`, 'normal');
+    }
+    if (item.type === 'skill-reroll') {
+      world.burst(position, '#d78a53', 18);
+      world.floatText(`游侠行动 ${item.oldValue} → ${item.value}`, position, '#efaa67');
+      ui.showToast('游侠行动完成，骰子已重掷', 'normal');
+    }
     if (item.type === 'buy') {
       audio.buy();
       world.burst(tilePosition(item.tileId, 0.5), player?.color || '#eac56f', 22);
@@ -247,6 +275,15 @@ async function runAI() {
   actionLock = true;
   ui.update(state);
   await wait(420);
+  if (state.pending?.kind === 'skill-reroll') {
+    const result = useSkillReroll(state, Math.random() < 0.5 ? 0 : 1);
+    if (result.ok) applyEventVisuals(result.events);
+    actionLock = false;
+    refresh();
+    await wait(260);
+    finishTurn();
+    return;
+  }
   if (state.pending?.kind === 'property') {
     const tileId = state.pending.tileId;
     const shouldBuy = aiShouldBuy(state, player.id, tileId);
@@ -349,16 +386,21 @@ function continueTurn() {
   refresh();
 }
 
-function resetGame() {
-  state = createInitialState(Date.now());
+function startSelectedGame(playerId) {
+  state = createInitialState(Date.now(), Number(playerId));
+  actionLock = false;
+  window.clearTimeout(aiTimer);
   world.updateState(state);
   characters.forEach((character, index) => {
     setCharacterTile(character, 0, state.players[index].avatarOffset, (positionIndex, slot) => world.getTileWorldPosition(positionIndex, slot));
   });
   ui.closeModal();
   refresh();
-  scheduleAI(500);
-  ui.openIntro();
+  ui.showToast(`${state.players[state.humanPlayerId].name}已入席，特殊技能「${state.players[state.humanPlayerId].skill.name}」已激活`, 'normal');
+}
+
+function resetGame() {
+  ui.openCharacterSelect(state.humanPlayerId ?? 0);
 }
 
 function initialize() {
@@ -438,6 +480,19 @@ function initialize() {
         if (!result.ok) { ui.showToast(result.reason, 'warning'); return; }
         applyEventVisuals(result.events); refresh(); ui.openTileInspector(state, tileId);
       },
+      onSkillReroll: (dieIndex) => {
+        if (actionLock) return;
+        const result = useSkillReroll(state, dieIndex);
+        if (!result.ok) { ui.showToast(result.reason, 'warning'); return; }
+        applyEventVisuals(result.events); refresh();
+      },
+      onKeepReroll: () => {
+        if (actionLock) return;
+        const result = keepSkillReroll(state);
+        if (!result.ok) { ui.showToast(result.reason, 'warning'); return; }
+        applyEventVisuals(result.events); refresh();
+      },
+      onCharacterConfirm: (playerId) => startSelectedGame(playerId),
       onNewGame: resetGame,
       onCameraReset: () => world.focusCenter(),
       onAudioToggle: (enabled) => { audio.setEnabled(enabled); if (enabled) audio.click(); }
@@ -450,9 +505,17 @@ function initialize() {
     world.updateState(state);
     ui.update(state);
     updateCharacters();
-    window.setTimeout(() => { bootScreen?.classList.add('is-ready'); ui.openIntro(); }, 850);
-    scheduleAI(500);
-    window.__RICH_GAME__ = { state: () => state, world, ui, performRoll, resetGame };
+    window.setTimeout(() => {
+      bootScreen?.classList.add('is-ready');
+      if (loadedFromSave) {
+        ui.showToast('已恢复上一局百业盛典', 'normal');
+        scheduleAI(500);
+      } else {
+        ui.openCharacterSelect(state.humanPlayerId ?? 0);
+      }
+    }, 850);
+    if (loadedFromSave) scheduleAI(500);
+    window.__RICH_GAME__ = { state: () => state, world, ui, performRoll, resetGame, startSelectedGame };
   } catch (error) {
     console.error(error);
     bootScreen?.classList.add('is-ready');
