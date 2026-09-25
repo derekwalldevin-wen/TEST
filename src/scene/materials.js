@@ -174,6 +174,168 @@ export function fanTexture() {
   }, 512);
 }
 
+export function lacquerTexture(base = '#792f2d', highlight = '#d17856', ink = '#3a1c1b') {
+  return canvasTexture((ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, base);
+    gradient.addColorStop(.42, highlight);
+    gradient.addColorStop(.58, base);
+    gradient.addColorStop(1, ink);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .2;
+    for (let i = 0; i < 35; i += 1) {
+      ctx.strokeStyle = i % 2 ? '#f6d48b' : '#210e15';
+      ctx.lineWidth = 1 + Math.random() * 2;
+      ctx.beginPath();
+      const y = Math.random() * size;
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(size * .25, y - 18, size * .58, y + 18, size, y);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = .13;
+    for (let i = 0; i < 700; i += 1) {
+      ctx.fillStyle = i % 3 ? '#fff4ce' : '#0d070c';
+      ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1);
+    }
+  }, 512, [1.1, 1.1]);
+}
+
+export function jadeTexture(base = '#5c9b86', highlight = '#b5d4b8', vein = '#2b655d') {
+  return canvasTexture((ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, size);
+    gradient.addColorStop(0, vein);
+    gradient.addColorStop(.35, base);
+    gradient.addColorStop(.6, highlight);
+    gradient.addColorStop(1, base);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .28;
+    for (let i = 0; i < 22; i += 1) {
+      ctx.strokeStyle = i % 2 ? '#e0f0cf' : vein;
+      ctx.lineWidth = 1 + Math.random() * 3;
+      ctx.beginPath();
+      const start = Math.random() * size;
+      ctx.moveTo(-20, start);
+      ctx.bezierCurveTo(size * .25, start - 38, size * .6, start + 40, size + 20, start - 10);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = .12;
+    for (let i = 0; i < 420; i += 1) {
+      ctx.fillStyle = '#f5f0cc';
+      ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1);
+    }
+  }, 512, [1.2, 1.2]);
+}
+
+export function silkTexture(base = '#c3a15a', accent = '#f3d98f', ink = '#654b28') {
+  return canvasTexture((ctx, size) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .16;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1;
+    for (let i = -size; i < size * 2; i += 6) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + size, size); ctx.stroke();
+    }
+    ctx.globalAlpha = .12;
+    ctx.strokeStyle = ink;
+    for (let i = 0; i < size; i += 5) {
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i + 2); ctx.stroke();
+    }
+    ctx.globalAlpha = .25;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 8;
+    ctx.strokeRect(18, 18, size - 36, size - 36);
+  }, 512, [1.4, 1.4]);
+}
+
+export function stoneTexture(base = '#c6b58d', light = '#eadbb4', dark = '#806a4b') {
+  return canvasTexture((ctx, size) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .2;
+    for (let i = 0; i < 80; i += 1) {
+      ctx.strokeStyle = i % 3 ? light : dark;
+      ctx.lineWidth = .5 + Math.random() * 2;
+      const y = Math.random() * size;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y + (Math.random() - .5) * 22); ctx.stroke();
+    }
+    ctx.globalAlpha = .18;
+    for (let i = 0; i < 180; i += 1) {
+      ctx.fillStyle = i % 2 ? '#fff3d0' : '#53452e';
+      ctx.beginPath(); ctx.arc(Math.random() * size, Math.random() * size, .5 + Math.random() * 2, 0, Math.PI * 2); ctx.fill();
+    }
+  }, 512, [3, 3]);
+}
+
+export function metalTexture(base = '#a87a38', light = '#f2d487', dark = '#4d2d1f') {
+  return canvasTexture((ctx, size) => {
+    const gradient = ctx.createLinearGradient(0, 0, size, 0);
+    gradient.addColorStop(0, dark);
+    gradient.addColorStop(.24, base);
+    gradient.addColorStop(.42, light);
+    gradient.addColorStop(.55, base);
+    gradient.addColorStop(1, dark);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .25;
+    for (let i = 0; i < 120; i += 1) {
+      ctx.strokeStyle = i % 2 ? '#fff1bc' : '#2c1a12';
+      ctx.lineWidth = .5 + Math.random();
+      const y = Math.random() * size;
+      ctx.beginPath(); ctx.moveTo(Math.random() * size, y); ctx.lineTo(Math.random() * size, y + (Math.random() - .5) * 8); ctx.stroke();
+    }
+  }, 512, [1, 1]);
+}
+
+export function skinTexture(base = '#f0c2a8', blush = '#d88c82') {
+  return canvasTexture((ctx, size) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .12;
+    for (let i = 0; i < 450; i += 1) {
+      ctx.fillStyle = i % 4 ? '#fff1df' : blush;
+      ctx.beginPath(); ctx.arc(Math.random() * size, Math.random() * size, .4 + Math.random() * 1.8, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = .09;
+    for (let i = 0; i < 34; i += 1) {
+      ctx.fillStyle = blush;
+      ctx.beginPath(); ctx.ellipse(Math.random() * size, Math.random() * size, 12 + Math.random() * 28, 3 + Math.random() * 9, Math.random() * Math.PI, 0, Math.PI * 2); ctx.fill();
+    }
+  }, 256, [1, 1]);
+}
+
+export function hairTexture(base = '#3b2022', light = '#9b5140') {
+  return canvasTexture((ctx, size) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .25;
+    for (let i = 0; i < 100; i += 1) {
+      ctx.strokeStyle = i % 3 ? light : '#110d17';
+      ctx.lineWidth = 1 + Math.random() * 2;
+      const x = Math.random() * size;
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.bezierCurveTo(x + 18, size * .35, x - 12, size * .7, x + 8, size); ctx.stroke();
+    }
+  }, 256, [1, 1]);
+}
+
+export function paperTexture(base = '#efe0b8', ink = '#8b5d37') {
+  return canvasTexture((ctx, size) => {
+    ctx.fillStyle = base;
+    ctx.fillRect(0, 0, size, size);
+    ctx.globalAlpha = .12;
+    for (let i = 0; i < 600; i += 1) {
+      ctx.fillStyle = i % 2 ? '#fff8df' : ink;
+      ctx.fillRect(Math.random() * size, Math.random() * size, 1, 1);
+    }
+    ctx.globalAlpha = .2;
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(18, 18, size - 36, size - 36);
+  }, 512, [1, 1]);
+}
+
 export function textSpriteTexture(text, { color = '#fff6df', background = '#b93b32', border = '#e8c775', subtext = '' } = {}) {
   return canvasTexture((ctx, size) => {
     ctx.clearRect(0, 0, size, size);

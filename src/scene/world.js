@@ -5,7 +5,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { BOARD, GROUPS, PLAYER_DEFS, TILES_BY_ID } from '../game/engine.js';
-import { canvasTexture, ivoryTexture, pbr, tileLabelTexture, woodTexture } from './materials.js';
+import { canvasTexture, ivoryTexture, lacquerTexture, metalTexture, paperTexture, pbr, stoneTexture, tileLabelTexture, woodTexture } from './materials.js';
+import { addArchGate, addBanner, addCoin, addLeafCluster, addPlanter, addRoofDetails, addScroll, addSeal, addVessel, addWindowFrame } from './art-kit.js';
 
 const BOARD_HALF = 8.9;
 const TILE_SPACING = 1.98;
@@ -129,6 +130,8 @@ export class WorldScene {
     this.characterSlots = new Map();
     this.bursts = [];
     this.floaters = [];
+    this.lanterns = [];
+    this.fireflies = [];
     this.diceAnimation = null;
     this.focusTarget = new THREE.Vector3(0, 0, 0);
     this.cameraFocus = new THREE.Vector3(0, 0, 0);
@@ -176,7 +179,7 @@ export class WorldScene {
 
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.24, 0.55, 0.82);
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.18, 0.55, 0.86);
     this.composer.addPass(this.bloom);
   }
 
@@ -192,9 +195,17 @@ export class WorldScene {
     const rim = new THREE.DirectionalLight('#79c9d0', 2.2);
     rim.position.set(18, 12, -18);
     this.scene.add(rim);
-    const centerGlow = new THREE.PointLight('#f4b45e', 6, 16, 2);
+    const centerGlow = new THREE.PointLight('#f4b45e', 4.2, 16, 2);
     centerGlow.position.set(0, 3, 0);
     this.scene.add(centerGlow);
+    const lanternFill = new THREE.PointLight('#e36c4d', 2.4, 20, 2);
+    lanternFill.position.set(-6, 2.5, 5);
+    this.scene.add(lanternFill);
+    const coolFill = new THREE.SpotLight('#8ad8d0', 18, 30, Math.PI / 5, .7, 1.4);
+    coolFill.position.set(4, 11, 8);
+    coolFill.target.position.set(0, 0, 0);
+    coolFill.castShadow = false;
+    this.scene.add(coolFill, coolFill.target);
   }
 
   createBackdrop() {
@@ -217,6 +228,19 @@ export class WorldScene {
     }
     starGeo.setAttribute('position', new THREE.BufferAttribute(starData, 3));
     this.scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: '#f4d69b', size: 0.16, transparent: true, opacity: 0.7, sizeAttenuation: true })));
+
+    const moon = mesh(new THREE.SphereGeometry(1.55, 32, 20), new THREE.MeshBasicMaterial({ color: '#f7d78f', transparent: true, opacity: .92 }), [-17, 12, -28]);
+    moon.castShadow = false;
+    this.scene.add(moon);
+    const moonHalo = ringMesh(2.05, .035, new THREE.MeshBasicMaterial({ color: '#e3b864', transparent: true, opacity: .35 }), [-17, 12, -28]);
+    moonHalo.rotation.x = Math.PI / 2;
+    this.scene.add(moonHalo);
+    const water = mesh(new THREE.CircleGeometry(31, 96), new THREE.MeshStandardMaterial({ color: '#173e42', roughness: .2, metalness: .25, transparent: true, opacity: .68 }), [0, -.43, 0]);
+    water.rotation.x = -Math.PI / 2;
+    water.receiveShadow = true;
+    this.scene.add(water);
+    const distantGate = addArchGate(new THREE.Group(), [0, -.25, -25], 1.35, '#365e59');
+    this.scene.add(distantGate);
 
     const mountains = new THREE.Group();
     const mountainMat = pbr('#284b47', { roughness: 1 });
@@ -275,17 +299,19 @@ export class WorldScene {
     group.rotation.y = layout.rotation;
     const groupData = GROUPS.find((item) => item.id === tile.group);
     const baseColor = tile.kind === 'property' ? groupData?.color ?? '#c5a56d' : tile.kind === 'go' ? '#b45d45' : tile.kind === 'jail' ? '#806d96' : tile.kind === 'park' ? '#648f65' : '#d4bb79';
-    const base = roundedMesh(TILE_SIZE, 0.24, TILE_SIZE, pbr(baseColor, { roughness: 0.7 }), 0.07, [0, 0.24, 0]);
-    const top = mesh(new THREE.PlaneGeometry(TILE_SIZE - 0.18, TILE_SIZE - 0.18), pbr('#e3d6b6', { map: ivoryTexture(), roughness: 0.84 }), [0, 0.375, 0]);
+    const base = roundedMesh(TILE_SIZE, 0.24, TILE_SIZE, pbr(baseColor, { map: stoneTexture(baseColor, '#f0dfb3', '#806545'), roughness: .72, metalness: .04 }), .07, [0, 0.24, 0]);
+    const top = mesh(new THREE.PlaneGeometry(TILE_SIZE - 0.18, TILE_SIZE - 0.18), pbr('#e3d6b6', { map: ivoryTexture(), roughness: .84 }), [0, 0.375, 0]);
     top.rotation.x = -Math.PI / 2;
     top.userData.tileId = tile.id;
     top.userData.tileIndex = index;
     this.clickTargets.push(top);
     group.add(base, top);
 
-    const border = ringMesh(0.76, 0.035, pbr('#b08b52', { metalness: 0.4, roughness: 0.38 }), [0, 0.405, 0]);
+    const border = ringMesh(0.76, 0.035, pbr('#b08b52', { map: metalTexture('#a77a3b', '#e6c579', '#5b3520'), metalness: 0.56, roughness: 0.3 }), [0, 0.405, 0]);
     border.rotation.x = Math.PI / 2;
     group.add(border);
+    const cornerMat = pbr('#d8ac58', { map: metalTexture(), metalness: .62, roughness: .28 });
+    [-.68, .68].forEach((x) => [-.68, .68].forEach((z) => group.add(mesh(new THREE.SphereGeometry(.035, 8, 6), cornerMat, [x, .41, z]))));
 
     const label = new THREE.Mesh(new THREE.PlaneGeometry(1.28, 0.42), new THREE.MeshBasicMaterial({ map: tileLabelTexture(tile), transparent: true, depthWrite: false }));
     label.rotation.x = -Math.PI / 2;
@@ -315,54 +341,86 @@ export class WorldScene {
 
   createLandmark(tile, index) {
     const group = new THREE.Group();
+    const detail = new THREE.Group();
     const ownerMaterials = [];
     const groupData = GROUPS.find((item) => item.id === tile.group);
-    const primary = pbr(groupData?.color ?? '#b98b4d', { roughness: 0.55, metalness: 0.08 });
-    const roofMat = pbr('#4b3430', { roughness: 0.58 });
-    const windowMat = pbr('#f2c76c', { emissive: '#e3a33f', emissiveIntensity: 0.75, roughness: 0.35 });
+    const primary = pbr(groupData?.color ?? '#b98b4d', { map: stoneTexture(groupData?.color ?? '#b98b4d', '#ead9aa', '#67452d'), roughness: .56, metalness: .08 });
+    const roofMat = pbr('#4b3430', { map: lacquerTexture('#4b2e2b', '#9a5140'), roughness: .44, metalness: .12 });
+    const windowMat = pbr('#f2c76c', { emissive: '#e3a33f', emissiveIntensity: .75, roughness: .35 });
+    const brass = pbr('#c6934b', { map: metalTexture(), roughness: .28, metalness: .68 });
+    const dark = pbr('#223632', { roughness: .58, metalness: .08 });
     ownerMaterials.push(primary, roofMat, windowMat);
+    group.add(detail);
+
     if (tile.kind === 'property') {
-      const base = roundedMesh(0.55, 0.35, 0.55, primary, 0.06, [0, 0.18, 0]);
+      const base = roundedMesh(0.55, 0.35, 0.55, primary, .06, [0, .18, 0]);
       group.add(base);
       if (tile.group === 'bamboo') {
-        group.add(mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.55, 7), pbr('#6b4d32'), [0, 0.56, 0]));
-        group.add(roofMesh(0.38, 0.25, roofMat, [0, 0.86, 0]));
+        group.add(mesh(new THREE.CylinderGeometry(.035, .035, .55, 7), pbr('#6b4d32'), [0, .56, 0]));
+        group.add(roofMesh(.38, .25, roofMat, [0, .86, 0]));
+        addLeafCluster(detail, [.25, .25, -.16], .7, '#5e9b70');
       } else if (tile.group === 'star') {
-        group.add(mesh(new THREE.CylinderGeometry(0.13, 0.25, 0.36, 12), primary, [0, 0.54, 0]));
-        group.add(roofMesh(0.33, 0.23, roofMat, [0, 0.82, 0]));
-        group.add(mesh(new THREE.SphereGeometry(0.08, 10, 8), windowMat, [0, 1.03, 0]));
+        group.add(mesh(new THREE.CylinderGeometry(.13, .25, .36, 12), primary, [0, .54, 0]));
+        group.add(roofMesh(.33, .23, roofMat, [0, .82, 0]));
+        group.add(mesh(new THREE.SphereGeometry(.08, 10, 8), windowMat, [0, 1.03, 0]));
+        addCoin(detail, [.25, .3, .12], .7);
       } else if (tile.group === 'city' || tile.group === 'sun') {
-        group.add(roundedMesh(0.42, 0.5, 0.42, primary, 0.05, [0, 0.56, 0]));
-        group.add(roofMesh(0.38, 0.28, roofMat, [0, 0.93, 0]));
-        group.add(mesh(new THREE.BoxGeometry(0.06, 0.16, 0.05), windowMat, [0.11, 0.6, 0.23]));
+        group.add(roundedMesh(.42, .5, .42, primary, .05, [0, .56, 0]));
+        group.add(roofMesh(.38, .28, roofMat, [0, .93, 0]));
+        addWindowFrame(detail, { x: -.11, y: .6, z: .23, w: .15, h: .19, frame: brass, glass: windowMat });
+        addWindowFrame(detail, { x: .11, y: .6, z: .23, w: .15, h: .19, frame: brass, glass: windowMat });
+        addBanner(detail, { x: .29, y: .38, z: -.12, color: groupData?.color || '#9d453c', height: .3, width: .1, rotate: -.15 });
       } else {
-        group.add(roundedMesh(0.38, 0.46, 0.38, primary, 0.06, [0, 0.53, 0]));
-        group.add(roofMesh(0.34, 0.22, roofMat, [0, 0.87, 0]));
+        group.add(roundedMesh(.38, .46, .38, primary, .06, [0, .53, 0]));
+        group.add(roofMesh(.34, .22, roofMat, [0, .87, 0]));
+        addWindowFrame(detail, { x: 0, y: .56, z: .22, w: .18, h: .2, frame: brass, glass: windowMat });
+        addVessel(detail, [.25, .18, .15], .48, groupData?.color);
       }
-      group.add(mesh(new THREE.BoxGeometry(0.08, 0.08, 0.06), windowMat, [0, 0.42, 0.3]));
+      addRoofDetails(detail, { y: .4, width: .54, depth: .54, roof: roofMat, accent: brass });
+      if (tile.group === 'river') addVessel(detail, [-.25, .15, .14], .46, '#79aaa0');
+      if (tile.group === 'garden') addPlanter(detail, [.25, .15, .16], .45, '#4f9368');
+      if (tile.group === 'cloud') addCoin(detail, [-.25, .22, .16], .55);
+      if (tile.group === 'sun') addSeal(detail, [-.24, .18, .17], .5, '#c75b3d');
+      if (tile.group === 'star') addSeal(detail, [-.24, .17, .16], .42, '#526b98');
     } else if (tile.kind === 'road') {
-      group.add(mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1, 16), pbr('#516d66', { metalness: 0.28 }), [0, 0.2, 0]));
-      group.add(mesh(new THREE.BoxGeometry(0.05, 0.62, 0.05), pbr('#5c3828'), [0, 0.49, 0]));
-      group.add(mesh(new THREE.BoxGeometry(0.42, 0.06, 0.06), primary, [0, 0.65, 0]));
-      group.add(mesh(new THREE.BoxGeometry(0.06, 0.12, 0.06), windowMat, [0, 0.78, 0]));
+      group.add(mesh(new THREE.CylinderGeometry(.2, .2, .1, 16), pbr('#516d66', { map: stoneTexture('#516d66', '#a5c4b1', '#253f40'), metalness: .18, roughness: .46 }), [0, .2, 0]));
+      group.add(mesh(new THREE.BoxGeometry(.05, .62, .05), pbr('#5c3828'), [0, .49, 0]));
+      group.add(mesh(new THREE.BoxGeometry(.42, .06, .06), primary, [0, .65, 0]));
+      group.add(mesh(new THREE.BoxGeometry(.06, .12, .06), windowMat, [0, .78, 0]));
+      detail.add(mesh(new THREE.BoxGeometry(.38, .025, .025), brass, [0, .27, .16]));
+      detail.add(mesh(new THREE.BoxGeometry(.38, .025, .025), brass, [0, .27, -.16]));
+      addBanner(detail, { x: .25, y: .26, z: .08, color: groupData?.color || '#8c5636', height: .25, width: .12 });
     } else if (tile.kind === 'utility') {
-      group.add(mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.58, 8), primary, [0, 0.42, 0]));
-      group.add(mesh(new THREE.SphereGeometry(0.1, 10, 8), windowMat, [0, 0.78, 0]));
-      group.add(mesh(new THREE.TorusGeometry(0.22, 0.025, 8, 20), primary, [0, 0.28, 0]).rotateX(Math.PI / 2));
+      group.add(mesh(new THREE.CylinderGeometry(.16, .22, .58, 8), primary, [0, .42, 0]));
+      group.add(mesh(new THREE.SphereGeometry(.1, 10, 8), windowMat, [0, .78, 0]));
+      group.add(mesh(new THREE.TorusGeometry(.22, .025, 8, 20), primary, [0, .28, 0]).rotateX(Math.PI / 2));
+      addWindowFrame(detail, { x: 0, y: .46, z: .2, w: .14, h: .2, frame: brass, glass: windowMat });
+      addBanner(detail, { x: .26, y: .28, z: .08, color: groupData?.color || '#5b8e83', height: .24, width: .1 });
     } else if (tile.kind === 'go') {
-      group.add(mesh(new THREE.TorusGeometry(0.38, 0.045, 8, 24), primary, [0, 0.22, 0]).rotateX(Math.PI / 2));
-      group.add(mesh(new THREE.ConeGeometry(0.22, 0.55, 4), primary, [0, 0.58, 0]));
+      group.add(mesh(new THREE.TorusGeometry(.38, .045, 8, 24), primary, [0, .22, 0]).rotateX(Math.PI / 2));
+      group.add(mesh(new THREE.ConeGeometry(.22, .55, 4), primary, [0, .58, 0]));
+      addArchGate(detail, [0, .16, -.05], .42, '#a74638');
+      addCoin(detail, [.28, .26, .16], .65);
     } else if (tile.kind === 'jail') {
-      group.add(mesh(new THREE.BoxGeometry(0.52, 0.45, 0.5), primary, [0, 0.35, 0]));
-      for (let i = -1; i <= 1; i += 1) group.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.5, 6), roofMat, [i * 0.12, 0.73, 0.18]));
-      group.add(mesh(new THREE.BoxGeometry(0.07, 0.23, 0.07), windowMat, [0, 0.4, 0.28]));
+      group.add(mesh(new THREE.BoxGeometry(.52, .45, .5), primary, [0, .35, 0]));
+      for (let i = -1; i <= 1; i += 1) group.add(mesh(new THREE.CylinderGeometry(.025, .025, .5, 6), roofMat, [i * .12, .73, .18]));
+      group.add(mesh(new THREE.BoxGeometry(.07, .23, .07), windowMat, [0, .4, .28]));
+      addRoofDetails(detail, { y: .59, width: .48, depth: .46, roof: roofMat, accent: brass });
+      addWindowFrame(detail, { x: 0, y: .38, z: .26, w: .15, h: .22, frame: brass, glass: windowMat });
+      addBanner(detail, { x: .27, y: .28, z: .1, color: '#795c8c', height: .24, width: .1 });
     } else if (tile.kind === 'park' || tile.kind === 'center') {
-      group.add(createTree(0.75, tile.kind === 'center' ? '#9fbd67' : '#4d875c'));
+      group.add(createTree(.75, tile.kind === 'center' ? '#9fbd67' : '#4d875c'));
+      addPlanter(detail, [.25, .13, .15], .48, tile.kind === 'center' ? '#9bbf6c' : '#4f8d63');
+      addLeafCluster(detail, [-.24, .12, .12], .55, '#6c9b5b');
     } else if (tile.kind === 'tax' || tile.kind === 'goto-jail' || tile.kind === 'chance' || tile.kind === 'chest') {
-      group.add(mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.24, 8), primary, [0, 0.25, 0]));
-      group.add(mesh(new THREE.SphereGeometry(0.16, 12, 8), windowMat, [0, 0.48, 0]));
+      group.add(mesh(new THREE.CylinderGeometry(.24, .28, .24, 8), primary, [0, .25, 0]));
+      group.add(mesh(new THREE.SphereGeometry(.16, 12, 8), windowMat, [0, .48, 0]));
+      if (tile.kind === 'chest' || tile.kind === 'chance') addScroll(detail, [.24, .14, .14], .5);
+      else addSeal(detail, [.24, .12, .16], .55, '#b34838');
+      addRoofDetails(detail, { y: .4, width: .42, depth: .42, roof: roofMat, accent: brass });
     }
     group.userData.ownerMaterials = ownerMaterials;
+    group.userData.detailGroup = detail;
     return group;
   }
 
@@ -399,6 +457,36 @@ export class WorldScene {
     const water = mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.025, 32), pbr('#72c4c8', { emissive: '#2a7b83', emissiveIntensity: 0.35, transparent: true, opacity: 0.78, roughness: 0.08 }), [0, 0.79, 0]);
     this.fountain.add(water);
     this.centerGroup.add(this.fountain);
+
+    const stoneMat = pbr('#b99e72', { map: stoneTexture(), roughness: .5, metalness: .08 });
+    const brass = pbr('#c9974a', { map: metalTexture(), roughness: .28, metalness: .7 });
+    for (let i = 0; i < 16; i += 1) {
+      const angle = i * Math.PI / 8;
+      const radial = roundedMesh(.07, .035, 1.05, brass, .015, [Math.sin(angle) * 1.95, .45, Math.cos(angle) * 1.95]);
+      radial.rotation.y = angle;
+      this.centerGroup.add(radial);
+      if (i % 2 === 0) {
+        const marker = mesh(new THREE.CylinderGeometry(.05, .07, .18, 8), stoneMat, [Math.sin(angle) * 2.52, .53, Math.cos(angle) * 2.52]);
+        marker.castShadow = true;
+        this.centerGroup.add(marker);
+        addCoin(this.centerGroup, [Math.sin(angle) * 2.5, .78, Math.cos(angle) * 2.5], .42);
+      }
+    }
+    const lotus = new THREE.Group();
+    for (let i = 0; i < 10; i += 1) {
+      const angle = i * Math.PI * 2 / 10;
+      const petal = mesh(new THREE.SphereGeometry(.24, 10, 6), pbr(i % 2 ? '#d9b96c' : '#b75a46', { roughness: .38 }), [Math.cos(angle) * .68, .18, Math.sin(angle) * .68], [.72, .18, 1.1]);
+      petal.rotation.y = angle;
+      lotus.add(petal);
+    }
+    lotus.position.y = .18;
+    this.centerGroup.add(lotus);
+    this.centerCoins = [];
+    for (let i = 0; i < 6; i += 1) {
+      const coin = addCoin(this.centerGroup, [0, 1.2 + i * .2, 0], .38 + (i % 2) * .08);
+      coin.userData.phase = i * Math.PI / 3;
+      this.centerCoins.push(coin);
+    }
   }
 
   createDecor() {
@@ -409,6 +497,8 @@ export class WorldScene {
       const lantern = createLantern();
       lantern.position.set(x, 0.18, z);
       lantern.scale.setScalar(0.9);
+      lantern.userData.phase = i * .8;
+      this.lanterns.push(lantern);
       this.boardGroup.add(lantern);
       if (i % 2 === 0) {
         const tree = createTree(0.82, i % 4 === 0 ? '#507c5c' : '#806e42');
@@ -430,7 +520,23 @@ export class WorldScene {
     bridge.add(mesh(new THREE.BoxGeometry(0.18, 0.48, 0.12), bridgeMat, [1.08, 0.28, 0]));
     bridge.position.set(6.5, 0.15, -5.7);
     bridge.rotation.y = -0.7;
+    bridge.add(mesh(new THREE.BoxGeometry(2.7, .05, .07), pbr('#c6964d', { metalness: .55, roughness: .34 }), [0, .1, .2]));
+    bridge.add(mesh(new THREE.BoxGeometry(2.7, .05, .07), pbr('#c6964d', { metalness: .55, roughness: .34 }), [0, .1, -.2]));
+    bridge.add(mesh(new THREE.BoxGeometry(.06, .38, .06), pbr('#a66a3c'), [-.85, .25, 0]));
+    bridge.add(mesh(new THREE.BoxGeometry(.06, .38, .06), pbr('#a66a3c'), [0, .25, 0]));
+    bridge.add(mesh(new THREE.BoxGeometry(.06, .38, .06), pbr('#a66a3c'), [.85, .25, 0]));
     this.boardGroup.add(bridge);
+
+    addArchGate(this.boardGroup, [0, .12, -7.2], .62, '#8f3b36');
+    addBanner(this.boardGroup, { x: -1.05, y: .18, z: -7.1, color: '#a63f3b', height: .52, width: .18, rotate: .08 });
+    addBanner(this.boardGroup, { x: 1.05, y: .18, z: -7.1, color: '#3c8276', height: .52, width: .18, rotate: -.08 });
+    [[-6.6, 2.4], [6.2, 2.7], [-2.8, -7.0], [2.8, 7.0]].forEach(([x, z], i) => addPlanter(this.boardGroup, [x, .14, z], .72, i % 2 ? '#568a64' : '#8e7647'));
+    for (let i = 0; i < 12; i += 1) {
+      const angle = i * Math.PI * 2 / 12;
+      const rock = mesh(new THREE.DodecahedronGeometry(.12 + (i % 3) * .04, 0), pbr(i % 2 ? '#6e8270' : '#8b704e', { roughness: .98 }), [Math.cos(angle) * 9.7, -.02, Math.sin(angle) * 9.7], [1.4, .6, 1]);
+      rock.rotation.y = angle;
+      this.boardGroup.add(rock);
+    }
   }
 
   createParticles() {
@@ -444,6 +550,17 @@ export class WorldScene {
     geometry.setAttribute('position', new THREE.BufferAttribute(data, 3));
     this.pollen = new THREE.Points(geometry, new THREE.PointsMaterial({ color: '#f6d890', size: 0.08, transparent: true, opacity: 0.62, sizeAttenuation: true }));
     this.scene.add(this.pollen);
+
+    const fireflyData = new Float32Array(90 * 3);
+    for (let i = 0; i < 90; i += 1) {
+      fireflyData[i * 3] = (Math.random() - .5) * 20;
+      fireflyData[i * 3 + 1] = .8 + Math.random() * 5;
+      fireflyData[i * 3 + 2] = (Math.random() - .5) * 20;
+    }
+    const fireflyGeo = new THREE.BufferGeometry();
+    fireflyGeo.setAttribute('position', new THREE.BufferAttribute(fireflyData, 3));
+    this.fireflies = new THREE.Points(fireflyGeo, new THREE.PointsMaterial({ color: '#ffe9a4', size: .12, transparent: true, opacity: .75, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }));
+    this.scene.add(this.fireflies);
   }
 
   createDice() {
@@ -669,6 +786,18 @@ export class WorldScene {
       this.pollen.rotation.y += delta * 0.012;
       this.pollen.position.y = Math.sin(now * 0.0004) * 0.3;
     }
+    if (this.fireflies) {
+      this.fireflies.rotation.y -= delta * .018;
+      this.fireflies.position.y = Math.sin(now * .0007) * .24;
+    }
+    this.lanterns?.forEach((lantern, index) => {
+      lantern.rotation.z = Math.sin(now * .0014 + (lantern.userData.phase || index)) * .035;
+      lantern.position.y = .18 + Math.sin(now * .0011 + index) * .025;
+    });
+    this.centerCoins?.forEach((coin, index) => {
+      coin.rotation.y += delta * (.55 + index * .04);
+      coin.position.y = 1.2 + index * .2 + Math.sin(now * .0012 + coin.userData.phase) * .08;
+    });
     this.clouds?.forEach((cloud, index) => {
       cloud.position.x += delta * cloud.userData.speed;
       if (cloud.position.x > 30) cloud.position.x = -30;

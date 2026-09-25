@@ -44,6 +44,8 @@ https://<用户名>.github.io/<仓库名>/
 - Vite 8 + Three.js 0.186
 - PBR 材质、程序化 Canvas 木纹/织物/团扇纹理
 - 透视镜头 + OrbitControls + UnrealBloomPass
+- 盛唐微缩剧场材质：漆器、青瓷、绢纱、石材、氧化金属、纸张与发丝纹理
+- 程序化资产细节：窗格、屋檐、旗帜、栏杆、花盆、器物、衣缝、扣子与角色饰品
 - Web Audio 合成音效，无外部音频资源
 - localStorage 自动存档
 - 无后端、无需登录
