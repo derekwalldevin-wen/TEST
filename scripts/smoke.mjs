@@ -3,6 +3,7 @@ import { chromium } from 'playwright';
 const targetUrl = process.env.SMOKE_URL || 'http://127.0.0.1:5173';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+page.setDefaultNavigationTimeout(60000);
 const errors = [];
 page.on('pageerror', (error) => errors.push(`pageerror: ${error.message}`));
 page.on('console', (message) => { if (message.type() === 'error') errors.push(`console: ${message.text()}`); });
@@ -46,6 +47,7 @@ await page.locator('.modal-card [data-action="close-modal"]').click();
 await page.screenshot({ path: 'artifacts-after-roll.png', fullPage: false });
 
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+mobile.setDefaultNavigationTimeout(60000);
 await mobile.addInitScript(() => localStorage.clear());
 const mobileErrors = [];
 mobile.on('pageerror', (error) => mobileErrors.push(`pageerror: ${error.message}`));
