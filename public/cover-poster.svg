@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="poster-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091f25"/><stop offset=".44" stop-color="#1b4646"/><stop offset="1" stop-color="#35251e"/></linearGradient>
+    <radialGradient id="poster-glow" cx="76%" cy="34%" r="58%"><stop stop-color="#7ec4ab" stop-opacity=".28"/><stop offset=".6" stop-color="#2c6b64" stop-opacity=".1"/><stop offset="1" stop-color="#0b2024" stop-opacity="0"/></radialGradient>
+    <linearGradient id="title-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b1"/><stop offset=".42" stop-color="#e7b85c"/><stop offset="1" stop-color="#a96735"/></linearGradient>
+    <linearGradient id="board-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7d98a"/><stop offset=".5" stop-color="#b6793c"/><stop offset="1" stop-color="#f0cb72"/></linearGradient>
+    <pattern id="paper-grain" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="3" cy="7" r=".7" fill="#fff" opacity=".14"/><circle cx="21" cy="16" r=".6" fill="#000" opacity=".1"/><path d="M2 27l8-2M23 4l5 1" stroke="#fff" stroke-width=".5" opacity=".08"/></pattern>
+    <filter id="poster-shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#061518" flood-opacity=".55"/></filter>
+    <filter id="soft-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#poster-bg)"/>
+  <rect width="1920" height="1080" fill="url(#poster-glow)"/>
+  <rect x="28" y="28" width="1864" height="1024" rx="30" fill="none" stroke="url(#board-gold)" stroke-width="3" opacity=".86"/>
+  <rect x="42" y="42" width="1836" height="996" rx="22" fill="none" stroke="#f4d58b" stroke-width="1" opacity=".38"/>
+  <rect x="44" y="44" width="1832" height="992" fill="url(#paper-grain)" opacity=".7"/>
+  <g><circle cx="100" cy="60" r="2.6" fill="#f6d98f" opacity="0.72"/><circle cx="371" cy="157" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="642" cy="254" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="913" cy="351" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1184" cy="448" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="1455" cy="85" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="1726" cy="182" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="257" cy="279" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="528" cy="376" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="799" cy="473" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1070" cy="110" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="1341" cy="207" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1612" cy="304" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="143" cy="401" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="414" cy="498" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="685" cy="135" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="956" cy="232" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="1227" cy="329" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1498" cy="426" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1769" cy="63" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="300" cy="160" r="2.6" fill="#f6d98f" opacity="0.72"/><circle cx="571" cy="257" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="842" cy="354" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1113" cy="451" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1384" cy="88" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="1655" cy="185" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="186" cy="282" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="457" cy="379" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="728" cy="476" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="999" cy="113" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1270" cy="210" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="1541" cy="307" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1812" cy="404" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="343" cy="501" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="614" cy="138" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="885" cy="235" r="2.6" fill="#9bc3b0" opacity="0.32"/><circle cx="1156" cy="332" r="1.2" fill="#f6d98f" opacity="0.72"/><circle cx="1427" cy="429" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="1698" cy="66" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="229" cy="163" r="1.2" fill="#9bc3b0" opacity="0.32"/><circle cx="500" cy="260" r="2.6" fill="#f6d98f" opacity="0.72"/><circle cx="771" cy="357" r="1.2" fill="#9bc3b0" opacity="0.32"/></g>
+  <g transform="translate(1510 350)" opacity=".95">
+    <circle r="228" fill="#173b3d" opacity=".42" stroke="#d5a757" stroke-width="2"/>
+    <circle r="196" fill="none" stroke="#e4c274" stroke-width="2" stroke-dasharray="2 13" opacity=".75"/>
+    <circle r="158" fill="#224d4c" opacity=".72" stroke="#76a79b" stroke-width="1.5"/>
+    <circle r="118" fill="none" stroke="#e0b961" stroke-width="2" opacity=".8"/>
+    <line x1="1510.0" y1="500.0" x2="1510.0" y2="568.0" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1548.8" y1="494.9" x2="1557.1" y2="525.8" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1585.0" y1="479.9" x2="1601.0" y2="507.6" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1616.1" y1="456.1" x2="1664.1" y2="504.1" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1639.9" y1="425.0" x2="1667.6" y2="441.0" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1654.9" y1="388.8" x2="1685.8" y2="397.1" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1660.0" y1="350.0" x2="1728.0" y2="350.0" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1654.9" y1="311.2" x2="1685.8" y2="302.9" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1639.9" y1="275.0" x2="1667.6" y2="259.0" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1616.1" y1="243.9" x2="1664.1" y2="195.9" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1585.0" y1="220.1" x2="1601.0" y2="192.4" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1548.8" y1="205.1" x2="1557.1" y2="174.2" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1510.0" y1="200.0" x2="1510.0" y2="132.0" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1471.2" y1="205.1" x2="1462.9" y2="174.2" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1435.0" y1="220.1" x2="1419.0" y2="192.4" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1403.9" y1="243.9" x2="1355.9" y2="195.9" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1380.1" y1="275.0" x2="1352.4" y2="259.0" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1365.1" y1="311.2" x2="1334.2" y2="302.9" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1360.0" y1="350.0" x2="1292.0" y2="350.0" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1365.1" y1="388.8" x2="1334.2" y2="397.1" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1380.1" y1="425.0" x2="1352.4" y2="441.0" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1403.9" y1="456.1" x2="1355.9" y2="504.1" stroke="#f1cd78" stroke-width="3" opacity="0.78"/><line x1="1435.0" y1="479.9" x2="1419.0" y2="507.6" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/><line x1="1471.2" y1="494.9" x2="1462.9" y2="525.8" stroke="#5d8f84" stroke-width="1.5" opacity="0.42"/>
+    <path d="M0-150 26-22 0 0-26-22Z" fill="url(#title-gold)" filter="url(#soft-glow)"/>
+    <path d="M0 150 26 22 0 0-26 22Z" fill="#6ca196" opacity=".8"/>
+    <circle r="15" fill="#f6d98a" stroke="#8e542c" stroke-width="4"/>
+    <text x="0" y="-264" text-anchor="middle" fill="#f4d58b" font-family="STKaiti,KaiTi,serif" font-size="24" letter-spacing="8">山海百业城</text>
+  </g>
+  <g transform="translate(0 0)">
+    <text x="148" y="174" fill="#e5bd6b" font-family="Noto Serif SC,serif" font-size="18" letter-spacing="9">原创 3D 财富漫游</text>
+    <text x="140" y="315" fill="url(#title-gold)" font-family="STKaiti,KaiTi,serif" font-size="112" letter-spacing="12" filter="url(#poster-shadow)">百业长安</text>
+    <text x="150" y="382" fill="#f4e0a9" font-family="STKaiti,KaiTi,serif" font-size="42" letter-spacing="10">一局棋 · 一座城 · 四位掌柜</text>
+    <path d="M150 428h560" stroke="#d8a657" stroke-width="2" opacity=".7"/>
+    <text x="150" y="475" fill="#d6dcc2" font-family="Noto Serif SC,serif" font-size="21" letter-spacing="2">选一位掌柜，掷一枚骰子</text>
+    <text x="150" y="516" fill="#9fc4ae" font-family="Noto Serif SC,serif" font-size="18" letter-spacing="3">买地 · 竞拍 · 升级 · 逐鹿百业</text>
+    <g transform="translate(151 562)">
+      <rect width="260" height="48" rx="24" fill="#a5453b" stroke="#f0cc7c" stroke-width="2"/>
+      <text x="130" y="31" text-anchor="middle" fill="#fff0c2" font-family="Noto Serif SC,serif" font-size="15" letter-spacing="3">1 位玩家 · 3 位 AI</text>
+    </g>
+  </g>
+  <g filter="url(#poster-shadow)"><g transform="translate(324 612)">
+    <rect x="0" y="0" width="300" height="396" rx="20" fill="#f2e6ca" stroke="#d9b35c" stroke-width="4"/>
+    <rect x="10" y="10" width="280" height="264" rx="15" fill="#d9b35c" opacity=".12"/>
+    <svg x="10" y="8" width="280" height="252" viewBox="0 0 320 360" preserveAspectRatio="xMidYMid slice"><svg class="avatar-svg" viewBox="0 0 320 360" role="img" aria-label="嘟嘟头像" xmlns="http://www.w3.org/2000/svg"><defs>
+    <linearGradient id="portrait-bg-portrait-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2a232d"/><stop offset=".46" stop-color="#315756"/><stop offset="1" stop-color="#102a2c"/></linearGradient>
+    <radialGradient id="portrait-light-portrait-0" cx="50%" cy="38%" r="70%"><stop stop-color="#d4ad5c" stop-opacity=".48"/><stop offset=".68" stop-color="#2a232d" stop-opacity=".08"/><stop offset="1" stop-color="#2a232d" stop-opacity="0"/></radialGradient>
+    <linearGradient id="portrait-cloth-portrait-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c84d3e"/><stop offset=".48" stop-color="#d4ad5c"/><stop offset="1" stop-color="#2a232d"/></linearGradient>
+    <filter id="portrait-shadow-portrait-0" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#061719" flood-opacity=".5"/></filter>
+  </defs><rect width="320" height="360" rx="26" fill="url(#portrait-bg-portrait-0)"/><rect x="1" y="1" width="318" height="358" rx="25" fill="none" stroke="#c84d3e" stroke-opacity=".48" stroke-width="2"/><circle cx="160" cy="145" r="146" fill="url(#portrait-light-portrait-0)"/><circle cx="160" cy="148" r="122" fill="none" stroke="#c84d3e" stroke-opacity=".32" stroke-width="3"/><circle cx="160" cy="148" r="132" fill="none" stroke="#f3d98e" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="2 10"/><g fill="#c84d3e" opacity=".46"><circle cx="32" cy="48" r="2"/><circle cx="278" cy="61" r="2"/><circle cx="38" cy="264" r="1.5"/><circle cx="281" cy="249" r="1.5"/></g><path d="M26 330h268" stroke="#f1d48a" stroke-opacity=".22" stroke-width="2"/><g filter="url(#portrait-shadow-portrait-0)">
+    <path d="M70 360c4-77 35-116 90-116s86 39 90 116Z" fill="url(#portrait-cloth-portrait-0)"/>
+    <path d="M87 265q73 39 146 0l-16 95H103Z" fill="#d6b36b" opacity=".9"/>
+    <path d="M91 274 239 362" stroke="#c34e3e" stroke-width="18"/><path d="M99 273 247 361" stroke="#e7c46c" stroke-width="5" opacity=".7"/>
+    <path d="M99 279h122" stroke="#f7e9c6" stroke-width="15" stroke-linecap="round"/>
+    <path d="M77 112c0-59 36-98 83-98s83 39 83 98v38c0 55-36 94-83 94s-83-39-83-94Z" fill="#f5eee1"/>
+    <circle cx="100" cy="38" r="35" fill="#25232b"/><circle cx="220" cy="38" r="35" fill="#25232b"/><circle cx="100" cy="38" r="18" fill="#51383d"/><circle cx="220" cy="38" r="18" fill="#51383d"/>
+    <ellipse cx="124" cy="136" rx="37" ry="48" fill="#29242a"/><ellipse cx="196" cy="136" rx="37" ry="48" fill="#29242a"/>
+    <ellipse cx="124" cy="137" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="196" cy="137" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="124" cy="139" rx="11" ry="15" fill="#4b2d25"/><ellipse cx="196" cy="139" rx="11" ry="15" fill="#4b2d25"/><circle cx="119" cy="130" r="4" fill="#fff"/><circle cx="191" cy="130" r="4" fill="#fff"/><path d="M96 99q28-16 56 0M168 99q28-16 56 0" fill="none" stroke="#432b2a" stroke-width="7" stroke-linecap="round"/><ellipse cx="160" cy="184" rx="49" ry="27" fill="#fffaf0"/><ellipse cx="160" cy="174" rx="16" ry="11" fill="#2a1c1b"/><path d="M134 190q26 24 52 0" fill="none" stroke="#5b302d" stroke-width="5" stroke-linecap="round"/>
+    <path d="M101 48q59-31 118 0l-8 39H109Z" fill="#c28c40"/><path d="M107 40q53-24 106 0" fill="none" stroke="#e4c489" stroke-width="12" stroke-linecap="round"/>
+    <ellipse cx="160" cy="2" rx="37" ry="26" fill="#e4b847"/><circle cx="160" cy="-12" r="7" fill="#fff0ac"/><path d="M160 4 202 13 163 25Z" fill="#e88732"/><circle cx="136" cy="1" r="5" fill="#251d22"/><circle cx="184" cy="1" r="5" fill="#251d22"/>
+    <ellipse cx="91" cy="177" rx="20" ry="10" fill="#d99588" opacity=".54"/><ellipse cx="229" cy="177" rx="20" ry="10" fill="#d99588" opacity=".54"/><circle cx="112" cy="87" r="5" fill="#fff" opacity=".6"/><circle cx="208" cy="87" r="5" fill="#fff" opacity=".6"/>
+  </g></svg></svg>
+    <rect x="20" y="274" width="260" height="1" fill="#8d6a3b" opacity=".28"/>
+    <text x="24" y="308" fill="#23473d" font-family="STKaiti,KaiTi,serif" font-size="27" letter-spacing="3">嘟嘟</text>
+    <text x="276" y="306" text-anchor="end" fill="#8b6a3c" font-family="Noto Serif SC,serif" font-size="12" letter-spacing="1">熊猫掌柜</text>
+    <circle cx="27" cy="339" r="6" fill="#d9b35c"/>
+    <text x="43" y="344" fill="#4c6a55" font-family="Noto Serif SC,serif" font-size="13" letter-spacing="1">✦ 招财熊猫 · 减免租金</text>
+    <text x="24" y="371" fill="#7b6b4c" font-family="Noto Serif SC,serif" font-size="11">每局 3 次，支付租金时减免 20%。</text>
+  </g><g transform="translate(648 612)">
+    <rect x="0" y="0" width="300" height="396" rx="20" fill="#f2e6ca" stroke="#4b9b83" stroke-width="4"/>
+    <rect x="10" y="10" width="280" height="264" rx="15" fill="#4b9b83" opacity=".12"/>
+    <svg x="10" y="8" width="280" height="252" viewBox="0 0 320 360" preserveAspectRatio="xMidYMid slice"><svg class="avatar-svg" viewBox="0 0 320 360" role="img" aria-label="唐糖头像" xmlns="http://www.w3.org/2000/svg"><defs>
+    <linearGradient id="portrait-bg-portrait-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#251d2a"/><stop offset=".46" stop-color="#315756"/><stop offset="1" stop-color="#102a2c"/></linearGradient>
+    <radialGradient id="portrait-light-portrait-1" cx="50%" cy="38%" r="70%"><stop stop-color="#5a9d82" stop-opacity=".48"/><stop offset=".68" stop-color="#251d2a" stop-opacity=".08"/><stop offset="1" stop-color="#251d2a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="portrait-cloth-portrait-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2a04a"/><stop offset=".48" stop-color="#5a9d82"/><stop offset="1" stop-color="#251d2a"/></linearGradient>
+    <filter id="portrait-shadow-portrait-1" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#061719" flood-opacity=".5"/></filter>
+  </defs><rect width="320" height="360" rx="26" fill="url(#portrait-bg-portrait-1)"/><rect x="1" y="1" width="318" height="358" rx="25" fill="none" stroke="#d2a04a" stroke-opacity=".48" stroke-width="2"/><circle cx="160" cy="145" r="146" fill="url(#portrait-light-portrait-1)"/><circle cx="160" cy="148" r="122" fill="none" stroke="#d2a04a" stroke-opacity=".32" stroke-width="3"/><circle cx="160" cy="148" r="132" fill="none" stroke="#f3d98e" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="2 10"/><g fill="#d2a04a" opacity=".46"><circle cx="32" cy="48" r="2"/><circle cx="278" cy="61" r="2"/><circle cx="38" cy="264" r="1.5"/><circle cx="281" cy="249" r="1.5"/></g><path d="M26 330h268" stroke="#f1d48a" stroke-opacity=".22" stroke-width="2"/><g filter="url(#portrait-shadow-portrait-1)">
+    <path d="M66 360c4-78 39-112 94-112s90 34 94 112Z" fill="#4e7792"/>
+    <path d="M90 259q70 33 140 0l-15 101H105Z" fill="#5c9e82"/>
+    <path d="M92 251q68 40 136 0" fill="none" stroke="#d5ae5b" stroke-width="17" stroke-linecap="round"/>
+    <path d="M82 232c-18 45-22 78-19 111" fill="none" stroke="#d6ae5b" stroke-width="25" stroke-linecap="round"/><path d="M238 232c18 45 22 78 19 111" fill="none" stroke="#d6ae5b" stroke-width="25" stroke-linecap="round"/>
+    <path d="M80 137c-7-75 29-117 80-117s87 42 80 117l-25 22H105Z" fill="#281d29"/>
+    <circle cx="105" cy="35" r="43" fill="#281d29"/><circle cx="215" cy="35" r="43" fill="#281d29"/><path d="M92 29h27M201 29h27" stroke="#c79343" stroke-width="9" stroke-linecap="round"/><path d="M105 28q55-38 110 0" fill="none" stroke="#c79343" stroke-width="8"/>
+    <path d="M99 93q61-55 122 0v53c0 57-28 88-61 88s-61-31-61-88Z" fill="#f2c7b0"/>
+    <ellipse cx="126" cy="140" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="194" cy="140" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="126" cy="142" rx="11" ry="15" fill="#4d2826"/><ellipse cx="194" cy="142" rx="11" ry="15" fill="#4d2826"/><circle cx="121" cy="133" r="4" fill="#fff"/><circle cx="189" cy="133" r="4" fill="#fff"/><path d="M98 102q28-16 56 0M166 102q28-16 56 0" fill="none" stroke="#432b2a" stroke-width="7" stroke-linecap="round"/><ellipse cx="91" cy="173" rx="20" ry="10" fill="#d8837d" opacity=".54"/><ellipse cx="229" cy="173" rx="20" ry="10" fill="#d8837d" opacity=".54"/>
+    <path d="M143 184q17 14 34 0" fill="none" stroke="#9b3e4a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M96 80q64-49 128 0l-12 34H108Z" fill="#281d29"/><path d="M119 75q41 24 82 0" fill="none" stroke="#3b2b34" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="105" cy="45" r="15" fill="#d66758"/><circle cx="105" cy="45" r="6" fill="#f4c66c"/>
+    <g transform="translate(270 280) rotate(9)"><circle r="47" fill="#dcae58"/><circle r="39" fill="#f2e0b0"/><g fill="#d86957"><ellipse cx="0" cy="-18" rx="9" ry="17"/><ellipse cx="16" cy="-6" rx="9" ry="17" transform="rotate(60 16 -6)"/><ellipse cx="10" cy="19" rx="9" ry="17" transform="rotate(120 10 19)"/><ellipse cx="-10" cy="19" rx="9" ry="17" transform="rotate(240 -10 19)"/><ellipse cx="-16" cy="-6" rx="9" ry="17" transform="rotate(300 -16 -6)"/></g><path d="M0 17v65" stroke="#a96e35" stroke-width="9" stroke-linecap="round"/></g>
+  </g></svg></svg>
+    <rect x="20" y="274" width="260" height="1" fill="#8d6a3b" opacity=".28"/>
+    <text x="24" y="308" fill="#23473d" font-family="STKaiti,KaiTi,serif" font-size="27" letter-spacing="3">唐糖</text>
+    <text x="276" y="306" text-anchor="end" fill="#8b6a3c" font-family="Noto Serif SC,serif" font-size="12" letter-spacing="1">花朝执事</text>
+    <circle cx="27" cy="339" r="6" fill="#4b9b83"/>
+    <text x="43" y="344" fill="#4c6a55" font-family="Noto Serif SC,serif" font-size="13" letter-spacing="1">✦ 花朝祝福 · 周期分红</text>
+    <text x="24" y="371" fill="#7b6b4c" font-family="Noto Serif SC,serif" font-size="11">每完成 3 回合，获得 100 文并抽一张机缘卡。</text>
+  </g><g transform="translate(972 612)">
+    <rect x="0" y="0" width="300" height="396" rx="20" fill="#f2e6ca" stroke="#b83f46" stroke-width="4"/>
+    <rect x="10" y="10" width="280" height="264" rx="15" fill="#b83f46" opacity=".12"/>
+    <svg x="10" y="8" width="280" height="252" viewBox="0 0 320 360" preserveAspectRatio="xMidYMid slice"><svg class="avatar-svg" viewBox="0 0 320 360" role="img" aria-label="三太子头像" xmlns="http://www.w3.org/2000/svg"><defs>
+    <linearGradient id="portrait-bg-portrait-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#28232d"/><stop offset=".46" stop-color="#315756"/><stop offset="1" stop-color="#102a2c"/></linearGradient>
+    <radialGradient id="portrait-light-portrait-2" cx="50%" cy="38%" r="70%"><stop stop-color="#b23e45" stop-opacity=".48"/><stop offset=".68" stop-color="#28232d" stop-opacity=".08"/><stop offset="1" stop-color="#28232d" stop-opacity="0"/></radialGradient>
+    <linearGradient id="portrait-cloth-portrait-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#627785"/><stop offset=".48" stop-color="#b23e45"/><stop offset="1" stop-color="#28232d"/></linearGradient>
+    <filter id="portrait-shadow-portrait-2" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#061719" flood-opacity=".5"/></filter>
+  </defs><rect width="320" height="360" rx="26" fill="url(#portrait-bg-portrait-2)"/><rect x="1" y="1" width="318" height="358" rx="25" fill="none" stroke="#627785" stroke-opacity=".48" stroke-width="2"/><circle cx="160" cy="145" r="146" fill="url(#portrait-light-portrait-2)"/><circle cx="160" cy="148" r="122" fill="none" stroke="#627785" stroke-opacity=".32" stroke-width="3"/><circle cx="160" cy="148" r="132" fill="none" stroke="#f3d98e" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="2 10"/><g fill="#627785" opacity=".46"><circle cx="32" cy="48" r="2"/><circle cx="278" cy="61" r="2"/><circle cx="38" cy="264" r="1.5"/><circle cx="281" cy="249" r="1.5"/></g><path d="M26 330h268" stroke="#f1d48a" stroke-opacity=".22" stroke-width="2"/><g filter="url(#portrait-shadow-portrait-2)">
+    <path d="M67 360c4-78 38-112 93-112s89 34 93 112Z" fill="url(#portrait-cloth-portrait-2)"/>
+    <path d="M96 257h128l-12 103H108Z" fill="#52656b"/><path d="M105 331h110" stroke="#b33e44" stroke-width="17"/>
+    <path d="M79 137c-8-75 28-117 81-117s89 42 81 117l-23 21H101Z" fill="#25232b"/>
+    <circle cx="94" cy="39" r="39" fill="#25232b"/><circle cx="226" cy="39" r="39" fill="#25232b"/><path d="M78 43q19 15 36 0M206 43q19 15 36 0" fill="none" stroke="#c43e45" stroke-width="8" stroke-linecap="round"/>
+    <path d="M100 87q60-53 120 0v60c0 56-28 87-60 87s-60-31-60-87Z" fill="#f1c4af"/>
+    <ellipse cx="126" cy="141" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="194" cy="141" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="126" cy="143" rx="11" ry="15" fill="#5a211e"/><ellipse cx="194" cy="143" rx="11" ry="15" fill="#5a211e"/><circle cx="121" cy="134" r="4" fill="#fff"/><circle cx="189" cy="134" r="4" fill="#fff"/><path d="M98 103q28-16 56 0M166 103q28-16 56 0" fill="none" stroke="#432b2a" stroke-width="7" stroke-linecap="round"/><ellipse cx="91" cy="174" rx="20" ry="10" fill="#d47e78" opacity=".54"/><ellipse cx="229" cy="174" rx="20" ry="10" fill="#d47e78" opacity=".54"/>
+    <path d="M143 185q17 14 34 0" fill="none" stroke="#873e43" stroke-width="5" stroke-linecap="round"/>
+    <path d="M95 84q65-54 130 0l-10 30H105Z" fill="#25232b"/><path d="M111 83q49 25 98 0" fill="none" stroke="#25232b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M79 247 241 178" stroke="#607b8a" stroke-width="15"/><rect x="206" y="190" width="55" height="45" rx="9" fill="#956341" transform="rotate(-25 206 190)"/><circle cx="225" cy="215" r="7" fill="#d7ad54"/>
+    <g transform="translate(263 289) rotate(-12)"><circle r="28" fill="#c97938"/><path d="M-19-8-8 0M0-25V-10M19-8 8 0" stroke="#5c2b1e" stroke-width="6" stroke-linecap="round"/><circle cx="-10" cy="5" r="3" fill="#2d1918"/><circle cx="10" cy="5" r="3" fill="#2d1918"/><path d="M-7 15q7 6 14 0" fill="none" stroke="#5c2b1e" stroke-width="3"/></g>
+  </g></svg></svg>
+    <rect x="20" y="274" width="260" height="1" fill="#8d6a3b" opacity=".28"/>
+    <text x="24" y="308" fill="#23473d" font-family="STKaiti,KaiTi,serif" font-size="27" letter-spacing="3">三太子</text>
+    <text x="276" y="306" text-anchor="end" fill="#8b6a3c" font-family="Noto Serif SC,serif" font-size="12" letter-spacing="1">游侠少主</text>
+    <circle cx="27" cy="339" r="6" fill="#b83f46"/>
+    <text x="43" y="344" fill="#4c6a55" font-family="Noto Serif SC,serif" font-size="13" letter-spacing="1">✦ 游侠行动 · 重掷骰子</text>
+    <text x="24" y="371" fill="#7b6b4c" font-family="Noto Serif SC,serif" font-size="11">每局 2 次，掷骰后可重掷一枚骰子。</text>
+  </g><g transform="translate(1296 612)">
+    <rect x="0" y="0" width="300" height="396" rx="20" fill="#f2e6ca" stroke="#477ba8" stroke-width="4"/>
+    <rect x="10" y="10" width="280" height="264" rx="15" fill="#477ba8" opacity=".12"/>
+    <svg x="10" y="8" width="280" height="252" viewBox="0 0 320 360" preserveAspectRatio="xMidYMid slice"><svg class="avatar-svg" viewBox="0 0 320 360" role="img" aria-label="德小文头像" xmlns="http://www.w3.org/2000/svg"><defs>
+    <linearGradient id="portrait-bg-portrait-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6c2b2a"/><stop offset=".46" stop-color="#315756"/><stop offset="1" stop-color="#102a2c"/></linearGradient>
+    <radialGradient id="portrait-light-portrait-3" cx="50%" cy="38%" r="70%"><stop stop-color="#477aa5" stop-opacity=".48"/><stop offset=".68" stop-color="#6c2b2a" stop-opacity=".08"/><stop offset="1" stop-color="#6c2b2a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="portrait-cloth-portrait-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d5a044"/><stop offset=".48" stop-color="#477aa5"/><stop offset="1" stop-color="#6c2b2a"/></linearGradient>
+    <filter id="portrait-shadow-portrait-3" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#061719" flood-opacity=".5"/></filter>
+  </defs><rect width="320" height="360" rx="26" fill="url(#portrait-bg-portrait-3)"/><rect x="1" y="1" width="318" height="358" rx="25" fill="none" stroke="#d5a044" stroke-opacity=".48" stroke-width="2"/><circle cx="160" cy="145" r="146" fill="url(#portrait-light-portrait-3)"/><circle cx="160" cy="148" r="122" fill="none" stroke="#d5a044" stroke-opacity=".32" stroke-width="3"/><circle cx="160" cy="148" r="132" fill="none" stroke="#f3d98e" stroke-opacity=".14" stroke-width="1.5" stroke-dasharray="2 10"/><g fill="#d5a044" opacity=".46"><circle cx="32" cy="48" r="2"/><circle cx="278" cy="61" r="2"/><circle cx="38" cy="264" r="1.5"/><circle cx="281" cy="249" r="1.5"/></g><path d="M26 330h268" stroke="#f1d48a" stroke-opacity=".22" stroke-width="2"/><g filter="url(#portrait-shadow-portrait-3)">
+    <path d="M67 360c4-78 38-112 93-112s89 34 93 112Z" fill="#ece6d2"/>
+    <path d="M88 252q72 38 144 0l-16 108H104Z" fill="#f2eee1"/>
+    <path d="M92 245 229 181" stroke="#8b4b2d" stroke-width="16"/><path d="M89 240h142" stroke="#8b4b2d" stroke-width="19"/><rect x="132" y="228" width="40" height="35" rx="6" fill="#d5a344"/>
+    <rect x="68" y="304" width="37" height="46" rx="10" fill="#8b4b2d"/><rect x="215" y="304" width="37" height="46" rx="10" fill="#8b4b2d"/>
+    <path d="M77 137c-7-78 31-119 83-119s90 41 83 119l-24 20H101Z" fill="#6f2927"/>
+    <path d="M90 71q70-53 140 0" fill="none" stroke="#a84e32" stroke-width="19" stroke-linecap="round"/><path d="M101 45q59-34 118 0" fill="none" stroke="#c66a3d" stroke-width="9" stroke-linecap="round"/>
+    <path d="M161 30q8-47 65-47" fill="none" stroke="#d5a344" stroke-width="11" stroke-linecap="round"/>
+    <path d="M101 88q59-52 118 0v59c0 57-27 88-59 88s-59-31-59-88Z" fill="#f2c5a9"/>
+    <ellipse cx="126" cy="141" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="194" cy="141" rx="20" ry="24" fill="#fffaf0"/><ellipse cx="126" cy="143" rx="11" ry="15" fill="#28618b"/><ellipse cx="194" cy="143" rx="11" ry="15" fill="#d19b35"/><circle cx="121" cy="134" r="4" fill="#fff"/><circle cx="189" cy="134" r="4" fill="#fff"/><path d="M98 103q28-16 56 0M166 103q28-16 56 0" fill="none" stroke="#432b2a" stroke-width="7" stroke-linecap="round"/><ellipse cx="91" cy="174" rx="20" ry="10" fill="#cc7a70" opacity=".54"/><ellipse cx="229" cy="174" rx="20" ry="10" fill="#cc7a70" opacity=".54"/>
+    <path d="M143 185q17 14 34 0" fill="none" stroke="#8e413b" stroke-width="5" stroke-linecap="round"/>
+    <path d="M104 89q56-45 112 0l-13 35H117Z" fill="#6f2927"/><path d="M123 88q37 21 74 0" fill="none" stroke="#a84e32" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="260" cy="248" r="23" fill="#d5a344"/><circle cx="260" cy="248" r="14" fill="#2b5364"/><path d="M260 235v26M247 248h26" stroke="#f5d78a" stroke-width="3"/>
+    <path d="M32 303c24-14 45-9 55 12" fill="none" stroke="#d5a344" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/>
+  </g></svg></svg>
+    <rect x="20" y="274" width="260" height="1" fill="#8d6a3b" opacity=".28"/>
+    <text x="24" y="308" fill="#23473d" font-family="STKaiti,KaiTi,serif" font-size="27" letter-spacing="3">德小文</text>
+    <text x="276" y="306" text-anchor="end" fill="#8b6a3c" font-family="Noto Serif SC,serif" font-size="12" letter-spacing="1">远行探险家</text>
+    <circle cx="27" cy="339" r="6" fill="#477ba8"/>
+    <text x="43" y="344" fill="#4c6a55" font-family="Noto Serif SC,serif" font-size="13" letter-spacing="1">✦ 远行罗盘 · 免费升级</text>
+    <text x="24" y="371" fill="#7b6b4c" font-family="Noto Serif SC,serif" font-size="11">每完成一圈，自动为一处已集齐同组的地产免费升级。</text>
+  </g></g>
+  <g transform="translate(150 1042)">
+    <circle cx="5" cy="-5" r="4" fill="#e3b45d"/>
+    <text x="22" y="0" fill="#e5d5a7" font-family="Noto Serif SC,serif" font-size="14" letter-spacing="3">40 格棋盘</text>
+    <circle cx="170" cy="-5" r="4" fill="#7fc0a3"/>
+    <text x="187" y="0" fill="#e5d5a7" font-family="Noto Serif SC,serif" font-size="14" letter-spacing="3">专属技能</text>
+    <circle cx="315" cy="-5" r="4" fill="#dd7b5c"/>
+    <text x="332" y="0" fill="#e5d5a7" font-family="Noto Serif SC,serif" font-size="14" letter-spacing="3">无需下载 · 即开即玩</text>
+    <text x="1620" y="0" text-anchor="end" fill="#c8b98c" font-family="Noto Serif SC,serif" font-size="12" letter-spacing="2">derekwalldevin-wen.github.io/TEST</text>
+  </g>
+</svg>
